@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
+python-decouple = "*"
+dj-database-url = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 
