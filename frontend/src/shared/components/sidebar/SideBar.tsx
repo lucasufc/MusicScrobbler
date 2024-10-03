@@ -11,18 +11,46 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material"
-import { ReactNode } from "react"
+import React, { ReactNode } from "react"
 import { useDrawerContext } from "../../contexts"
+import { useMatch, useNavigate, useResolvedPath } from "react-router-dom"
 
 interface ISideBarProps {
     children: ReactNode
+}
+
+interface iListItemLinkProps {
+    label: string
+    icon: string
+    to: string
+    onClick: (() => void) | undefined
+}
+
+const ListItemLink: React.FC<iListItemLinkProps> = ({ to, icon, label, onClick }) => {
+    const navigate = useNavigate()
+    const resolvedPath = useResolvedPath(to)
+    const match = useMatch({ path: resolvedPath.pathname, end: false })
+
+    const handleClick = () => {
+        navigate(to)
+        onClick?.()
+    }
+
+    return (
+        <ListItemButton onClick={handleClick} selected={!!match}>
+            <ListItemIcon>
+                <Icon>{icon}</Icon>
+            </ListItemIcon>
+            <ListItemText primary={label} />
+        </ListItemButton>
+    )
 }
 
 export const SideBar: React.FC<ISideBarProps> = ({ children }) => {
     const theme = useTheme()
     const smDown = useMediaQuery(theme.breakpoints.down("sm"))
 
-    const { isDrawerOpen, toggleDrawerOpen } = useDrawerContext()
+    const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useDrawerContext()
 
     return (
         <>
@@ -46,12 +74,15 @@ export const SideBar: React.FC<ISideBarProps> = ({ children }) => {
 
                     <Box flex={1}>
                         <List component="nav">
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    <Icon>home</Icon>
-                                </ListItemIcon>
-                                <ListItemText primary="Home" />
-                            </ListItemButton>
+                            {drawerOptions.map((drawerOption) => (
+                                <ListItemLink
+                                    key={drawerOption.path}
+                                    icon={drawerOption.icon}
+                                    to={drawerOption.path}
+                                    label={drawerOption.label}
+                                    onClick={smDown ? toggleDrawerOpen : undefined}
+                                />
+                            ))}
                         </List>
                     </Box>
                 </Box>
