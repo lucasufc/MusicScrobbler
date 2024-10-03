@@ -12,7 +12,7 @@ import {
     useTheme,
 } from "@mui/material"
 import React, { ReactNode } from "react"
-import { useDrawerContext } from "../../contexts"
+import { useAppThemeContext, useDrawerContext } from "../../contexts"
 import { useMatch, useNavigate, useResolvedPath } from "react-router-dom"
 
 interface ISideBarProps {
@@ -52,6 +52,7 @@ export const SideBar: React.FC<ISideBarProps> = ({ children }) => {
 
     const { isDrawerOpen, toggleDrawerOpen, drawerOptions } = useDrawerContext()
 
+    const { themeName, toggleTheme } = useAppThemeContext()
     return (
         <>
             <Drawer open={isDrawerOpen} variant={smDown ? "temporary" : "permanent"} onClose={toggleDrawerOpen}>
@@ -84,6 +85,14 @@ export const SideBar: React.FC<ISideBarProps> = ({ children }) => {
                                 />
                             ))}
                         </List>
+                    </Box>
+                    <Box>
+                        <ListItemButton onClick={toggleTheme}>
+                            <ListItemIcon>
+                                <Icon>{themeName === "light" ? "dark_mode" : "light_mode"}</Icon>
+                            </ListItemIcon>
+                            <ListItemText primary={themeName === "light" ? "Dark Mode" : "Light Mode"} />
+                        </ListItemButton>
                     </Box>
                 </Box>
             </Drawer>
